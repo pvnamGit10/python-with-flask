@@ -56,8 +56,11 @@ def login():
 
 @auth.route("/callback")
 def callback():
+    # Use the authorization server's response to fetch the OAuth 2.0 tokens
     flow.fetch_token(authorization_response=request.url)
 
+    # Specify the state when creating the flow in the callback so that it can
+    # verified in the authorization server response.
     if not session["state"] == request.args["state"]:
         abort(500)  # State does not match!
 
@@ -90,7 +93,7 @@ def register_info():
     mysql.execute(sql)
     mydb.commit()
     mysql.close()
-    return redirect("/home")
+    return redirect("/input-info")
 
 @auth.route("/logout")
 def logout():

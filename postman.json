@@ -1,0 +1,14 @@
+{
+  "web": {
+    "client_id": "717951336721-l6saacg72ip7nn9hf10hsthi4oq2ptam.apps.googleusercontent.com",
+    "project_id": "backend-engineer-test",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "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",
+    "redirect_uris": [
+      "https://www.getpostman.com/oauth2/callback"
+    ]
+  },
+  "access_token" : "ya29.a0ARrdaM_UYzGCRREWBYmk4ScrxNLYtEvPrwuEk-GkIqFHan0rerm5sHsmQdYdcvuOZor1H9FdyLxJ2Gf17E-aqDOuRLCrEaYBAuvuOm77vvb_N9zYo6fOP_LMznC6Cc9EuHw7rGky2HQXmzye25kgXJoPQ9WG"
+}
