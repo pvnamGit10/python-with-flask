@@ -1,6 +1,7 @@
 import os.path
 import pathlib
 
+from utils.db_help import user_already_existed
 from google.auth.transport import requests
 import google.auth.transport.requests
 from flask import session, abort, redirect, request, jsonify, Blueprint
@@ -36,21 +37,19 @@ def login_required(function):
     return wrapper
 
 
-def user_already_existed(email):
-    sql = '''
-        SELECT id from user_google where email = '{0}'
-    '''.format(email)
-    mysql = mydb.cursor()
-    mysql.execute(sql)
-    data = mysql.fetchall()
-    mysql.close()
-    return bool(len(data) > 0)
-
-
 @auth.route("/register-by-google")
+def register_google():
+    authorization_url, state = flow.authorization_url()
+    session["state"] = state
+    session["status"] = "register"
+    return redirect(authorization_url)
+
+
+@auth.route("/login-by-google")
 def login():
     authorization_url, state = flow.authorization_url()
     session["state"] = state
+    session["status"] = "login"
     return redirect(authorization_url)
 
 
@@ -68,7 +67,6 @@ def callback():
     request_session = requests.AuthorizedSession(credentials)
     cached_session = cachecontrol.CacheControl(request_session)
     token_request = google.auth.transport.requests.Request(session=cached_session)
-
     id_info = id_token.verify_oauth2_token(
         id_token=credentials._id_token,
         request=token_request,
@@ -78,6 +76,15 @@ def callback():
     session["google_id"] = id_info.get("sub")
     session["name"] = id_info.get("name")
     session["email"] = id_info.get("email")
+    if session["status"] == "login":
+        if not user_already_existed(session["email"]):
+            return jsonify(400, {'message': "Must register", 'status': False})
+        else:
+            return redirect("/home")
+
+    if session["status"] == "register":
+        if user_already_existed(session["email"]):
+            return redirect("/login-by-google")
 
     return redirect("/register-info")
 
@@ -94,6 +101,7 @@ def register_info():
     mydb.commit()
     mysql.close()
     return redirect("/input-info")
+
 
 @auth.route("/logout")
 def logout():

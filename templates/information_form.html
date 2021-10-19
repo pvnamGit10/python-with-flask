@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form action="/input-info" method="POST">
+        Name : <input type="text" name="user_name" value="" placeholder="name"/> <br>
+        Phone : <input type="text" name="user_phone" value="" placeholder="phone"/><br>
+        Occupation : <select name="occupations" id="occupations" onchange="handleOccupations()">
+                        <option value="student">Student</option>
+                        <option value="teacher">Teacher</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <span id="other_occ" style="display: none">
+                        <br>
+                        <input type="text" id="other_occ_value"
+                               value="" placeholder="Enter occupations"/>
+                    </span>
+        <br>
+        <input type="submit" value="Add Value"/>
+        <br>
+        <a href="/logout">Continue to login</a>
+    </form>
+    <script>
+
+        function handleOccupations(){
+            let occupations = document.getElementById('occupations').value;
+            if(occupations === 'other'){
+                document.getElementById('other_occ').style.display= "inline";
+            }else {
+                document.getElementById('other_occ').style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
