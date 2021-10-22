@@ -1,3 +1,4 @@
+import functools
 import os.path
 import pathlib
 
@@ -28,6 +29,7 @@ flow = Flow.from_client_secrets_file(
 
 
 def login_required(function):
+    @functools.wraps(function)
     def wrapper(*args, **kwargs):
         if "google_id" not in session:
             return abort(401)  # Authorization required
@@ -80,7 +82,7 @@ def callback():
         if not user_already_existed(session["email"]):
             return jsonify(400, {'message': "Must register", 'status': False})
         else:
-            return redirect("/home")
+            return redirect("/home-page")
 
     if session["status"] == "register":
         if user_already_existed(session["email"]):

@@ -1,3 +1,5 @@
+import itertools
+
 from config import mydb
 
 
@@ -21,3 +23,19 @@ def get_user_by_email(email):
     data = mysql.fetchone()
     mysql.close()
     return data[0]
+
+
+def get_blog_like(blog_id):
+    sql = '''
+        select u.user_name
+        from user_google u
+        join blog_like bl on u.id = bl.user_id
+        join blog b on b.id = bl.blog_id
+        where b.id = {0}
+    '''.format(blog_id)
+    mysql = mydb.cursor()
+    mysql.execute(sql)
+    data = mysql.fetchall()
+    list_data = list(itertools.chain.from_iterable(data))
+    mysql.close()
+    return list_data
