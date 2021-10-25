@@ -2,6 +2,9 @@ import functools
 import os.path
 import pathlib
 
+import flask
+import requests_oauthlib
+
 from utils.db_help import user_already_existed
 from google.auth.transport import requests
 import google.auth.transport.requests
@@ -10,8 +13,8 @@ from flask import session, abort, redirect, request, jsonify, Blueprint
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 from pip._vendor import cachecontrol
-from pyasn1.debug import Debug
 from config import mydb
+from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 
 auth = Blueprint('auth', __name__)
 
@@ -26,6 +29,8 @@ flow = Flow.from_client_secrets_file(
             "openid"],
     redirect_uri="http://127.0.0.1:5000/callback"
 )
+
+URL = "http://127.0.0.1:5000/"
 
 
 def login_required(function):
@@ -48,11 +53,16 @@ def register_google():
 
 
 @auth.route("/login-by-google")
-def login():
+def login_by_google():
     authorization_url, state = flow.authorization_url()
     session["state"] = state
     session["status"] = "login"
     return redirect(authorization_url)
+
+
+@auth.route("/fb-login")
+def login_by_fb():
+    return "fb"
 
 
 @auth.route("/callback")
